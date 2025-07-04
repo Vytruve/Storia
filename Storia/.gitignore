@@ -1,0 +1,79 @@
+﻿# Este arquivo .gitignore é otimizado para um projeto .NET com C# e C++,
+# garantindo que apenas o código-fonte essencial seja versionado.
+
+# --- Dependências e Ferramentas ---
+# Ignora pacotes NuGet restaurados localmente.
+**/[Pp]ackages/
+# Não versionar o cache de pacotes do .NET Core
+*.nuget.props
+*.nuget.targets
+
+# --- Saídas de Compilação (Build) ---
+# Ignora os diretórios de saída padrão para projetos .NET e C++.
+**/[Bb]in/
+**/[Oo]bj/
+**/[Dd]ebug/
+**/[Rr]elease/
+**/[Dd]ebugPublic/
+**/[Rr]eleasePublic/
+**/[Xx]64/
+**/[Aa]rm64/
+
+# --- Arquivos de Ambiente da IDE (Visual Studio / Rider / VS Code) ---
+# Visual Studio
+.vs/
+bin/
+obj/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# --- Arquivos de Teste ---
+# Ignora resultados de testes e relatórios de cobertura de código.
+**/[Tt]est[Rr]esult*/
+**/[Cc]overage*/
+
+# --- Arquivos do Sistema Operacional ---
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+# --- Arquivos de Configuração Local ---
+# Arquivos de configuração específicos do ambiente de desenvolvimento não devem
+# ser versionados. O appsettings.json principal (com a estrutura) deve ser versionado.
+**/appsettings.Development.json
+**/secrets.json
+
+# --- Arquivos Gerados por Ferramentas ---
+# Resharper
+_ReSharper*/
+*.[Rr]esharper
+*.DotSettings.user
+
+# --- Arquivos de Log e Banco de Dados Local ---
+# Ignora logs e arquivos de banco de dados SQLite locais.
+*.log
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# --- Outros ---
+# Arquivos temporários do MSBuild
+*.tlog
+
+# Fim do arquivo .gitignore

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Dependências de Pacotes NuGet para DTOs e Validação -->
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+		<PackageReference Include="FluentValidation" Version="11.9.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Referência ao projeto Core -->
+		<ProjectReference Include="..\..\Core\Storia.Core\Storia.Core.csproj" />
+	</ItemGroup>
+
+</Project>

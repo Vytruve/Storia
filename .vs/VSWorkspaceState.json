@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Storia",
+    "\\Storia\\src",
+    "\\Storia\\src\\Application",
+    "\\Storia\\src\\Core",
+    "\\Storia\\src\\Infrastructure",
+    "\\Storia\\src\\UI",
+    "\\Storia\\src\\UI\\Storia.UI.Maui",
+    "\\Storia\\src\\UI\\Storia.UI.Maui\\ViewModels",
+    "\\Storia\\src\\UI\\Storia.UI.Maui\\Views"
+  ],
+  "SelectedNode": "\\Storia\\src\\UI\\Storia.UI.Maui\\Views\\DashboardPage.xaml",
+  "PreviewInSolutionExplorer": false
+}

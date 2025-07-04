@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Storia.UI.Maui.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Storia.UI.Maui.Views"
+    Shell.FlyoutBehavior="Flyout">
+
+    <!-- 
+    Estilo do Shell: Define cores para a barra de navegação e o menu,
+    usando recursos que definiremos em nossos arquivos de estilo.
+    -->
+    <Shell.Resources>
+        <Style TargetType="Shell" ApplyToDerivedTypes="True">
+            <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
+            <Setter Property="Shell.ForegroundColor" Value="White" />
+            <Setter Property="Shell.TitleColor" Value="White" />
+            <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+            <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
+            <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
+            <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
+            <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
+            <Setter Property="Shell.TabBarTitleColor" Value="White"/>
+        </Style>
+    </Shell.Resources>
+
+    <!-- Cabeçalho do Menu Lateral (Flyout) -->
+    <Shell.FlyoutHeader>
+        <Grid Padding="20" BackgroundColor="{StaticResource PrimaryDark}">
+            <Label Text="Storia ERP" TextColor="White" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <!-- Item de Menu: Dashboard (Página Inicial) -->
+    <FlyoutItem Title="Dashboard" Route="DashboardPage">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="" FontFamily="FASolid" Color="White" />
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:DashboardPage}" />
+    </FlyoutItem>
+
+    <!-- Item de Menu: Ponto de Venda (PDV) -->
+    <FlyoutItem Title="Ponto de Venda" Route="PointOfSalePage">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="" FontFamily="FASolid" Color="White" />
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:PointOfSalePage}" />
+    </FlyoutItem>
+
+    <!-- Item de Menu: Gerenciamento de Produtos -->
+    <FlyoutItem Title="Produtos" Route="ProductManagementPage">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="" FontFamily="FASolid" Color="White" />
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:ProductManagementPage}" />
+    </FlyoutItem>
+
+    <!-- Item de Menu: Relatórios -->
+    <FlyoutItem Title="Relatórios" Route="ReportsPage">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="" FontFamily="FASolid" Color="White" />
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:ReportsPage}" />
+    </FlyoutItem>
+
+</Shell>

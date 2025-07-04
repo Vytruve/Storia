@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Estilo para os Cards de KPI -->
+    <Style x:Key="CardStyle" TargetType="Frame">
+        <Setter Property="Padding" Value="15"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="HasShadow" Value="True"/>
+        <Setter Property="BorderColor" Value="{StaticResource LightGray}"/>
+        <Setter Property="BackgroundColor" Value="{StaticResource CardBackgroundColor}"/>
+        <Setter Property="MinimumHeightRequest" Value="120"/>
+    </Style>
+
+    <!-- Estilo para Botão Primário (Ação Principal) -->
+    <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+        <Setter Property="TextColor" Value="{StaticResource White}"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="Padding" Value="14"/>
+        <Setter Property="MinimumHeightRequest" Value="48"/>
+    </Style>
+
+    <!-- Estilo para Botão Secundário (Ação Alternativa) -->
+    <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent"/>
+        <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+        <Setter Property="BorderColor" Value="{StaticResource Primary}"/>
+        <Setter Property="BorderWidth" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="Padding" Value="14"/>
+        <Setter Property="MinimumHeightRequest" Value="48"/>
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Storia.UI.Maui.ViewModels"
+             xmlns:dto="clr-namespace:Storia.Application.DTOs;assembly=Storia.Application"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Storia.UI.Maui.Views.ProductManagementPage"
+             x:DataType="vm:ProductManagementViewModel"
+             Title="Gerenciar Produtos"
+             BackgroundColor="{StaticResource PageBackgroundColor}">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding LoadProductsCommand}" />
+    </ContentPage.Behaviors>
+
+    <Grid RowDefinitions="*, Auto">
+
+        <!-- Lista de Produtos -->
+        <CollectionView Grid.Row="0"
+                        ItemsSource="{Binding Products}"
+                        SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dto:ProductDto">
+                    <Frame Style="{StaticResource CardStyle}" Margin="15,10">
+                        <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" ColumnSpacing="10">
+
+                            <!-- Nome e SKU -->
+                            <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="2">
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource PrimaryTextColor}" LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding Sku, StringFormat='SKU: {0}'}" FontSize="12" TextColor="{StaticResource SecondaryTextColor}"/>
+                            </VerticalStackLayout>
+
+                            <!-- Preço e Estoque -->
+                            <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="2" Margin="0,10,0,0">
+                                <Label FontSize="14">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Preço: " TextColor="{StaticResource SecondaryTextColor}"/>
+                                            <Span Text="{Binding Price, StringFormat='{0:C}'}" FontAttributes="Bold" TextColor="{StaticResource SuccessColor}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label FontSize="14">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Estoque: " TextColor="{StaticResource SecondaryTextColor}"/>
+                                            <Span Text="{Binding TotalStockQuantity}" FontAttributes="Bold" TextColor="{StaticResource PrimaryTextColor}"/>
+                                            <Span Text="{Binding UnitOfMeasure, StringFormat=' {0}'}" TextColor="{StaticResource SecondaryTextColor}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </VerticalStackLayout>
+
+                            <!-- Botões de Ação -->
+                            <HorizontalStackLayout Grid.Column="1" Grid.RowSpan="2" Spacing="5" VerticalOptions="Center">
+                                <ImageButton Source="edit.png" WidthRequest="30" HeightRequest="30"
+                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductManagementViewModel}}, Path=GoToEditProductPageCommand}"
+                                             CommandParameter="{Binding .}"/>
+                                <ImageButton Source="delete.png" WidthRequest="30" HeightRequest="30"
+                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProductManagementViewModel}}, Path=DeleteProductCommand}"
+                                             CommandParameter="{Binding .}"/>
+                            </HorizontalStackLayout>
+
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="20" Spacing="10" VerticalOptions="Center">
+                    <Label Text="" FontFamily="FASolid" FontSize="50" HorizontalOptions="Center" TextColor="{StaticResource MidGray}"/>
+                    <Label Text="Nenhum produto encontrado" FontSize="18" HorizontalOptions="Center" TextColor="{StaticResource SecondaryTextColor}"/>
+                    <Label Text="Clique em 'Adicionar Produto' para começar." HorizontalOptions="Center" TextColor="{StaticResource SecondaryTextColor}"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <!-- Botão Flutuante para Adicionar -->
+        <Button Grid.Row="0"
+                Text="" 
+                FontFamily="FASolid"
+                FontSize="24"
+                CornerRadius="28"
+                HeightRequest="56"
+                WidthRequest="56"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="20"
+                Style="{StaticResource PrimaryButtonStyle}"
+                Command="{Binding GoToAddProductPageCommand}"/>
+
+        <!-- Indicador de Carregamento -->
+        <ActivityIndicator Grid.RowSpan="2"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+    </Grid>
+</ContentPage>
