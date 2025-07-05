@@ -19,11 +19,14 @@ jobs:
         with:
           dotnet-version: 8.0.100
 
-      - name: 🧩 Restaurar pacotes NuGet
-        run: dotnet restore
 
       - name: 📦 Restaurar workloads (MAUI, etc)
         run: dotnet workload restore
+
+        
+      - name: 🧩 Restaurar pacotes NuGet
+        run: dotnet restore
+
 
       - name: 🏗️ Build do projeto MAUI
         run: dotnet build src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj --configuration Release --no-restore
