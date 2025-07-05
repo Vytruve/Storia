@@ -1,50 +1,48 @@
 # Nome do Workflow: Aparecerá na aba "Actions" do seu repositório GitHub.
 name: Build Storia ERP Installer for Windows
 
-# Gatilhos: Define quando o workflow será executado.
+# Gatilhos: define quando o workflow será acionado.
 on:
   push:
     branches: [ "main" ]
-  
-  # Permite que você execute este workflow manualmente a partir da aba Actions.
   workflow_dispatch:
 
-# Trabalhos: Define uma ou mais tarefas a serem executadas.
 jobs:
   build:
-    # Ambiente: Especifica que o trabalho deve ser executado em uma máquina virtual Windows.
+    # Executar em VM Windows
     runs-on: windows-latest
 
-    # Passos: A sequência de tarefas que compõem o trabalho.
     steps:
-      # 1. Checkout do Código
+      # 1. Faz checkout do repositório
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Configurar o SDK do .NET
+      # 2. Configura o SDK .NET conforme global.json
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
 
-      # 3. Instalar as Cargas de Trabalho do .NET MAUI
-      - name: Install MAUI Workloads
+      # 3. Instala workloads do MAUI
+      - name: Install MAUI workloads
         run: dotnet workload install maui
 
-      # 4. Restaurar Dependências NuGet
+      # 4. Restaura pacotes NuGet
       - name: Restore NuGet packages
         run: dotnet restore Storia.sln
 
-      # 5. Publicar o Aplicativo como um Pacote MSIX
+      # 5. Publica o projeto como MSIX
       - name: Publish MAUI App for Windows
-        # A CORREÇÃO FINAL: Adicionamos a propriedade -p:GenerateAppxPackageOnBuild=true
-        # para forçar a criação do pacote MSIX durante a publicação.
-        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:GenerateAppxPackageOnBuild=true -o ./publish
+        run: |
+          dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj \
+            -f net8.0-windows10.0.19041.0 \
+            -c Release \
+            -p:GenerateAppxPackageOnBuild=true \
+            -o publish
 
-      # 6. Carregar o Instalador MSIX como Artefato
-      - name: Upload MSIX Installer
+      # 6. Upload do instalador .msix como artefato
+      - name: Upload MSIX installer
         uses: actions/upload-artifact@v4
         with:
           name: storia-erp-installer
-          # Este caminho agora funcionará, pois o arquivo .msix será criado.
-          path: './publish/**/*.msix'
+          path: publish/**/*.msix
