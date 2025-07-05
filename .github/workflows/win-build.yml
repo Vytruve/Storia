@@ -2,46 +2,37 @@
 
 name: Build and Package Windows Installer
 
-# Controla quando o workflow será executado
 on:
-  # Executa em pushes para a branch "main"
   push:
     branches: [ "main" ]
-  # Permite que você execute este workflow manualmente na aba Actions do GitHub
   workflow_dispatch:
 
 jobs:
   build-windows:
-    # O tipo de máquina que o job irá rodar
     runs-on: windows-latest
 
     steps:
-    # 1. Baixa o código do seu repositório
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # 2. Configura o ambiente .NET com a versão especificada no seu global.json
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # Usando a versão do seu projeto
+        dotnet-version: '8.0.x'
 
-    # 3. Restaura as dependências do projeto (NuGet packages)
+    # NOVO PASSO ADICIONADO AQUI!
+    # Instala os workloads do .NET MAUI necessários para o projeto.
+    - name: Install MAUI Workloads
+      run: dotnet workload restore "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj"
+
     - name: Restore dependencies
       run: dotnet restore "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj"
 
-    # 4. Compila e publica o app para Windows, gerando o pacote MSIX
-    #    -f: Especifica o Target Framework para Windows. Verifique o seu .csproj para o valor exato.
-    #    -c: Compila em modo Release para otimização.
-    #    /p:GenerateAppxPackageOnBuild=true: Esta é a propriedade chave que instrui o build a criar o instalador .msix.
-    #    /p:AppxPackageOutput: Define o diretório de saída para o instalador.
     - name: Build and Package
       run: dotnet publish "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj" -f net8.0-windows10.0.19041.0 -c Release /p:GenerateAppxPackageOnBuild=true /p:AppxPackageOutput=../publish/
 
-    # 5. Faz o upload do instalador gerado como um artefato do workflow
-    #    Isso permitirá que você baixe o arquivo .msix diretamente do GitHub.
     - name: Upload Installer Artifact
       uses: actions/upload-artifact@v4
       with:
         name: Storia-Installer-Windows
-        path: publish/**/*.msix # Padrão para encontrar o arquivo .msix na pasta de saída
+        path: publish/**/*.msix
