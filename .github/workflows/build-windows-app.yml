@@ -1,4 +1,4 @@
-name: Build e Pacote MSIX para Storia ERP
+name: Build Storia ERP Installer for Windows
 
 on:
   push:
@@ -24,29 +24,18 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore Storia.sln
 
-      - name: Create Test Certificate
-        run: |
-          Add-Type -AssemblyName System.Security
-          $cert = New-SelfSignedCertificate -DnsName "CN=TruveSoftware" -CertStoreLocation "Cert:\CurrentUser\My" -KeySpec KeyExchange -Type CodeSigningCert
-          $password = ConvertTo-SecureString -String "1234" -Force -AsPlainText
-          Export-PfxCertificate -Cert $cert -FilePath ".\storia_cert.pfx" -Password $password
-        shell: pwsh
+      # 5. Publicar o Aplicativo como um Pacote MSIX
+      # O comando é o mesmo, mas como o .csproj foi alterado, o resultado
+      # será um pacote MSIX em vez de uma pasta de arquivos soltos.
+      - name: Publish MAUI App for Windows
+        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -c Release -f net8.0-windows10.0.19041.0
 
-      - name: Publish MSIX Package
-        run: >
-          dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj 
-          -f net8.0-windows10.0.19041.0 
-          -c Release 
-          -p:WindowsPackageType=MSIX 
-          -p:WindowsAppPackageVersion=1.0.${{ github.run_number }} 
-          -p:AppxPackageSigningEnabled=true 
-          -p:PackageCertificateThumbprint="" 
-          -p:PackageCertificatePath=".\storia_cert.pfx" 
-          -p:PackageCertificatePassword="1234"
-        shell: pwsh
-#sla
-      - name: Upload MSIX Artifact
+      # 6. Carregar o Instalador MSIX como Artefato
+      # O caminho agora procura pelo arquivo .msix dentro da pasta AppPackages.
+      - name: Upload MSIX Installer
         uses: actions/upload-artifact@v4
         with:
           name: storia-erp-installer
-          path: src/UI/Storia.UI.Maui/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/
+          # Usamos um wildcard (**) para encontrar o arquivo .msix em qualquer subdiretório.
+          # Isso é mais robusto do que um caminho fixo.
+          path: '**/AppPackages/**/*.msix'
