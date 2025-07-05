@@ -31,25 +31,21 @@ jobs:
     - name: Instalar carga de trabalho MAUI
       run: dotnet workload install maui-windows
 
-    # Passo 4: Restaurar as dependências NuGet
+    # Passo 4: Restaurar as dependências NuGet da solução
     - name: Restaurar pacotes NuGet
-      run: dotnet restore Storia.sln --runtime win-x64
+      run: dotnet restore Storia.sln
 
-    # Passo 5: Compilar a solução (sem RID, para validar as bibliotecas)
-    - name: Compilar a solução
-      run: dotnet build Storia.sln --configuration Release --no-restore --runtime win-x64
-
-    # Passo 6: Publicar o aplicativo de UI (O passo correto para criar o executável)
+    # Passo 5: Publicar o aplicativo MAUI para Windows
+    # Este comando compila e publica o projeto específico para a plataforma e arquitetura desejadas.
+    # Ele substitui a necessidade de um 'dotnet build' separado para a solução com um RuntimeIdentifier.
     - name: Publicar o aplicativo MAUI para Windows
-      # O comando 'publish' é o ideal para preparar para distribuição.
-      # Ele compila, pega todas as dependências e coloca em uma pasta de saída.
-      run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release --no-build -o ./publish
+      run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win-x64 -o ./publish
 
-    # Passo 7: Criar um arquivo ZIP da pasta publicada
+    # Passo 6: Criar um arquivo ZIP da pasta publicada
     - name: Criar arquivo ZIP
       run: Compress-Archive -Path ./publish/* -DestinationPath storia-erp-windows.zip
 
-    # Passo 8: Criar a Release no GitHub e anexar o ZIP
+    # Passo 7: Criar a Release no GitHub e anexar o ZIP
     - name: Criar Release no GitHub
       # Condição: Só executa este passo se o gatilho foi um 'push' para a branch 'main'
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
