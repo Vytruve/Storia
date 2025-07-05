@@ -11,19 +11,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do repositório
+      - name: 🧾 Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Instalar .NET 8 SDK
+      - name: 🧰 Instalar .NET 8 SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.100
 
-      - name: Restaurar pacotes
+      - name: 🧩 Restaurar pacotes NuGet
         run: dotnet restore
 
-      - name: Restaurar workloads (MAUI, etc)
+      - name: 📦 Restaurar workloads (MAUI, etc)
         run: dotnet workload restore
 
-      - name: Build do projeto
-        run: dotnet build --configuration Release --no-restore
+      - name: 🏗️ Build do projeto MAUI
+        run: dotnet build src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj --configuration Release --no-restore
+
+      - name: 🧪 Rodar testes (se existirem)
+        run: |
+          if ls tests/**/*.csproj 1> /dev/null 2>&1; then
+            dotnet test --no-build --configuration Release
+          else
+            echo "🔍 Nenhum projeto de teste encontrado, pulando testes..."
+          fi
+
+      - name: 📁 Upload de artefatos (build result)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            src/UI/Storia.UI.Maui/bin/Release
