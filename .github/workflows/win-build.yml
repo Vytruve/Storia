@@ -20,16 +20,16 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    # NOVO PASSO ADICIONADO AQUI!
-    # Instala os workloads do .NET MAUI necessários para o projeto.
     - name: Install MAUI Workloads
       run: dotnet workload restore "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj"
 
     - name: Restore dependencies
       run: dotnet restore "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj"
 
+    # PASSO ATUALIZADO AQUI!
+    # Adicionamos /p:WindowsPackageType=Msix para resolver o conflito de configuração.
     - name: Build and Package
-      run: dotnet publish "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj" -f net8.0-windows10.0.19041.0 -c Release /p:GenerateAppxPackageOnBuild=true /p:AppxPackageOutput=../publish/
+      run: dotnet publish "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj" -f net8.0-windows10.0.19041.0 -c Release /p:GenerateAppxPackageOnBuild=true /p:WindowsPackageType=Msix /p:AppxPackageOutput=../publish/
 
     - name: Upload Installer Artifact
       uses: actions/upload-artifact@v4
