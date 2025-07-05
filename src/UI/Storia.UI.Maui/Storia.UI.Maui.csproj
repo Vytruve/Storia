@@ -16,7 +16,6 @@
 
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<WindowsPackageType>None</WindowsPackageType>
 
 		<!-- Display Information -->
 		<ApplicationTitle>Storia ERP</ApplicationTitle>
