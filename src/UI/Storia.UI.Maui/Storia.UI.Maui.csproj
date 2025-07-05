@@ -32,7 +32,7 @@
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<OutputType>WinExe</OutputType>
 		<RuntimeIdentifier>win10-x64</RuntimeIdentifier>
-		<WindowsPackageType>Msi</WindowsPackageType> 
+		<WindowsPackageType>Msix</WindowsPackageType> 
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained> 
 	</PropertyGroup>
 
