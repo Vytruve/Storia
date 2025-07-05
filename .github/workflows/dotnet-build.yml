@@ -1,0 +1,50 @@
+# Nome do workflow que aparecerá na aba "Actions" do GitHub.
+name: Build e Validação do .NET
+
+# Define os gatilhos que acionam o workflow.
+on:
+  # Aciona quando houver um push para a branch 'main'.
+  push:
+    branches: [ "main" ]
+  # Aciona quando um Pull Request for aberto ou atualizado para a branch 'main'.
+  pull_request:
+    branches: [ "main" ]
+
+# Define os trabalhos (jobs) a serem executados.
+jobs:
+  # Nome do nosso único trabalho.
+  build:
+    # Especifica o tipo de máquina virtual (runner) a ser usada.
+    # 'windows-latest' é a escolha correta, pois nosso projeto MAUI está focado no Windows.
+    runs-on: windows-latest
+
+    # Define os passos (steps) que compõem o trabalho.
+    steps:
+    # Passo 1: Fazer o checkout do código do repositório.
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    # Passo 2: Configurar o ambiente .NET.
+    # Esta ação lê o arquivo 'global.json' para usar a versão correta do SDK.
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        # Opcional: pode especificar a versão aqui, mas ele lerá o global.json por padrão.
+        # dotnet-version: '8.0.x' 
+        
+    # Passo 3: Restaurar as dependências NuGet.
+    # O comando 'restore' é executado no arquivo de solução para restaurar todos os projetos.
+    - name: Restaurar Dependências
+      run: dotnet restore Storia/Storia.sln
+
+    # Passo 4: Compilar a solução completa em modo Release.
+    # A compilação em modo Release é mais rigorosa e simula o build final.
+    # O --no-restore evita restaurar as dependências novamente.
+    - name: Compilar a Solução
+      run: dotnet build Storia/Storia.sln --configuration Release --no-restore
+
+    # Passo 5: Executar os testes (atualmente desabilitado).
+    # Este passo está aqui como um placeholder para o futuro.
+    # Quando tivermos projetos de teste, basta remover o comentário.
+    # - name: Executar Testes
+    #   run: dotnet test Storia/Storia.sln --no-build --verbosity normal
