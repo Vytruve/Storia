@@ -1,34 +1,46 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<!-- Target Framework para Windows -->
-		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+		<!-- Configurações Comuns -->
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<OutputType>WinExe</OutputType>
 		<RootNamespace>Storia.UI.Maui</RootNamespace>
-		<WindowsAppSdkBootstrapInitialize>true</WindowsAppSdkBootstrapInitialize>
-		
-		<!-- Configurações Essenciais do MAUI -->
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<EnableDefaultMauiItems>true</EnableDefaultMauiItems>
-		<!-- A CORREÇÃO DEFINITIVA -->
-		<!-- NÃO REMOVA ESTA LINHA -->
-		<WindowsPackageType>None</WindowsPackageType>
-
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-
+		
 		<!-- Display Information -->
 		<ApplicationTitle>Storia ERP</ApplicationTitle>
 		<ApplicationId>com.truvesoftware.storia</ApplicationId>
-		<ApplicationDisplayVersion>1.0.0-win</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
-		<!-- Supported OS Platform Version para Windows -->
+		<!-- Supported OS Platform Version -->
 		<SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
+
+	<!-- =================== CONFIGURAÇÃO CONDICIONAL =================== -->
+
+	<!-- Configuração para criar um pacote de instalador MSIX -->
+	<!-- Ativada quando a propriedade 'PackageMSIX' for 'true' -->
+	<PropertyGroup Condition="'$(PackageMSIX)'=='true'">
+		<CreatePackageCertificate>true</CreatePackageCertificate>
+		<ApplicationDisplayVersion>$(ApplicationDisplayVersion)-msix</ApplicationDisplayVersion>
+	</PropertyGroup>
+	
+	<!-- Configuração para criar um executável não empacotado (padrão) -->
+	<!-- Ativada quando 'PackageMSIX' não for 'true' -->
+	<PropertyGroup Condition="'$(PackageMSIX)'!='true'">
+		<WindowsPackageType>None</WindowsPackageType>
+		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+		<WindowsAppSdkBootstrapInitialize>true</WindowsAppSdkBootstrapInitialize>
+		<ApplicationDisplayVersion>$(ApplicationDisplayVersion)-dev</ApplicationDisplayVersion>
+	</PropertyGroup>
+
+	<!-- ================================================================ -->
 
 	<ItemGroup>
 		<!-- Recursos do MAUI -->
