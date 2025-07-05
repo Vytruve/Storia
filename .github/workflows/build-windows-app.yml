@@ -1,34 +1,50 @@
+# Nome do Workflow: Aparecerá na aba "Actions" do seu repositório GitHub.
 name: Build Storia ERP Installer for Windows
 
+# Gatilhos: Define quando o workflow será executado.
 on:
   push:
     branches: [ "main" ]
+  
+  # Permite que você execute este workflow manualmente a partir da aba Actions.
   workflow_dispatch:
 
+# Trabalhos: Define uma ou mais tarefas a serem executadas.
 jobs:
   build:
+    # Ambiente: Especifica que o trabalho deve ser executado em uma máquina virtual Windows.
     runs-on: windows-latest
 
+    # Passos: A sequência de tarefas que compõem o trabalho.
     steps:
+      # 1. Checkout do Código
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Configurar o SDK do .NET
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
 
+      # 3. Instalar as Cargas de Trabalho do .NET MAUI
       - name: Install MAUI Workloads
         run: dotnet workload install maui
 
+      # 4. Restaurar Dependências NuGet
       - name: Restore NuGet packages
         run: dotnet restore Storia.sln
 
+      # 5. Publicar o Aplicativo como um Pacote MSIX
       - name: Publish MAUI App for Windows
-        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:WindowsPackageType=MSIX -p:GenerateAppxPackageOnBuild=true -o ./publish
+        # A CORREÇÃO FINAL: Adicionamos a propriedade -p:GenerateAppxPackageOnBuild=true
+        # para forçar a criação do pacote MSIX durante a publicação.
+        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:GenerateAppxPackageOnBuild=true -o ./publish
 
+      # 6. Carregar o Instalador MSIX como Artefato
       - name: Upload MSIX Installer
         uses: actions/upload-artifact@v4
         with:
           name: storia-erp-installer
-          path: '**/AppPackages/**/*.msix'
+          # Este caminho agora funcionará, pois o arquivo .msix será criado.
+          path: './publish/**/*.msix'
