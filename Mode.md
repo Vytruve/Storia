@@ -1,6 +1,4 @@
-﻿Com certeza. Com base nas nossas decisões, vamos estruturar o projeto de forma profissional, utilizando uma arquitetura em camadas (N-Tier Architecture) que separa claramente as responsabilidades.
-
-Esta estrutura promove manutenibilidade, testabilidade e escalabilidade, mesmo para um projeto "simples". Ela separa o projeto em:
+﻿Esta estrutura promove manutenibilidade, testabilidade e escalabilidade, mesmo para um projeto "simples". Ela separa o projeto em:
 
 Core (Domínio): O coração do negócio, sem dependências externas.
 
