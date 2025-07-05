@@ -5,15 +5,16 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap rescap">
 
+  <!-- VALORES REAIS INSERIDOS AQUI -->
   <Identity
-    Name="$AppIdentifier$"
-    Publisher="$AppPublisher$"
-    Version="$AppVersion$" />
+    Name="com.truvesoftware.storia"
+    Publisher="CN=Development"
+    Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>$AppTitle$</DisplayName>
-    <PublisherDisplayName>$AppPublisher$</PublisherDisplayName>
-    <Logo>$AppLogo$</Logo>
+    <DisplayName>Storia ERP</DisplayName>
+    <PublisherDisplayName>TruveSoftware</PublisherDisplayName>
+    <Logo>Images\appicon.png</Logo>
   </Properties>
 
   <Dependencies>
@@ -26,16 +27,16 @@
 
   <Applications>
     <Application Id="App"
-      Executable="$TargetExe$"
-      EntryPoint="$TargetEntryPoint$">
+      Executable="Storia.UI.Maui.exe"
+      EntryPoint="Storia.UI.Maui.App">
       <uap:VisualElements
-        DisplayName="$AppTitle$"
-        Description="$AppDescription$"
+        DisplayName="Storia ERP"
+        Description="Storia ERP"
         BackgroundColor="transparent"
-        Square150x150Logo="$AppLogo$"
-        Square44x44Logo="$AppLogo$">
-        <uap:DefaultTile Wide310x150Logo="$AppLogo$" Square71x71Logo="$AppLogo$" Square310x310Logo="$AppLogo$" />
-        <uap:SplashScreen Image="$AppSplashScreen$" />
+        Square150x150Logo="Images\appicon.png"
+        Square44x44Logo="Images\appicon.png">
+        <uap:DefaultTile Wide310x150Logo="Images\appicon.png" Square71x71Logo="Images\appicon.png" Square310x310Logo="Images\appicon.png" />
+        <uap:SplashScreen Image="Images\splash.png" />
       </uap:VisualElements>
     </Application>
   </Applications>
