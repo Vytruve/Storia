@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+ï»¿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Storia.UI.Maui.ViewModels"
@@ -17,26 +17,26 @@
 					<Entry Text="{Binding Product.Name}" Placeholder="Ex: Refrigerante 2L" />
 				</Frame>
 
-				<!-- SKU e Código de Barras -->
+				<!-- SKU e Cï¿½digo de Barras -->
 				<Grid ColumnDefinitions="*,*" ColumnSpacing="15">
 					<VerticalStackLayout Grid.Column="0" Spacing="5">
-						<Label Text="SKU (Código Interno)" />
+						<Label Text="SKU (Cï¿½digo Interno)" />
 						<Frame Style="{StaticResource CardStyle}" Padding="0">
 							<Entry Text="{Binding Product.Sku}" Placeholder="Ex: REFRI-2L-COLA" />
 						</Frame>
 					</VerticalStackLayout>
 					<VerticalStackLayout Grid.Column="1" Spacing="5">
-						<Label Text="Código de Barras (Opcional)" />
+						<Label Text="Cï¿½digo de Barras (Opcional)" />
 						<Frame Style="{StaticResource CardStyle}" Padding="0">
 							<Entry Text="{Binding Product.Barcode}" Placeholder="Ex: 789..." Keyboard="Numeric"/>
 						</Frame>
 					</VerticalStackLayout>
 				</Grid>
 
-				<!-- Preço e Unidade de Medida -->
+				<!-- Preï¿½o e Unidade de Medida -->
 				<Grid ColumnDefinitions="*,*" ColumnSpacing="15">
 					<VerticalStackLayout Grid.Column="0" Spacing="5">
-						<Label Text="Preço de Venda (R$)" />
+						<Label Text="Preï¿½o de Venda (R$)" />
 						<Frame Style="{StaticResource CardStyle}" Padding="0">
 							<Entry Text="{Binding Product.Price}" Placeholder="Ex: 9.99" Keyboard="Numeric"/>
 						</Frame>
@@ -44,7 +44,7 @@
 					<VerticalStackLayout Grid.Column="1" Spacing="5">
 						<Label Text="Unidade de Medida" />
 						<Frame Style="{StaticResource CardStyle}" Padding="0">
-							<!-- O Picker será populado no code-behind -->
+							<!-- O Picker serï¿½ populado no code-behind -->
 							<Picker x:Name="UnitOfMeasurePicker" 
                                     Title="Selecione"
                                     ItemsSource="{Binding Source={x:Reference UnitOfMeasurePicker}, Path=ItemsSource}"
@@ -53,8 +53,8 @@
 					</VerticalStackLayout>
 				</Grid>
 
-				<!-- Descrição -->
-				<Label Text="Descrição (Opcional)" />
+				<!-- Descriï¿½ï¿½o -->
+				<Label Text="Descriï¿½ï¿½o (Opcional)" />
 				<Frame Style="{StaticResource CardStyle}" Padding="0" HeightRequest="120">
 					<Editor Text="{Binding Product.Description}" Placeholder="Detalhes do produto..." AutoSize="TextChanges"/>
 				</Frame>
@@ -62,7 +62,7 @@
 			</VerticalStackLayout>
 		</ScrollView>
 
-		<!-- Botões de Ação -->
+		<!-- Botï¿½es de Aï¿½ï¿½o -->
 		<HorizontalStackLayout Grid.Row="1" Spacing="10" Padding="20" BackgroundColor="{StaticResource CardBackgroundColor}">
 			<Button Text="Cancelar" Command="{Binding CancelCommand}" Style="{StaticResource SecondaryButtonStyle}" HorizontalOptions="FillAndExpand"/>
 			<Button Text="Salvar" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButtonStyle}" HorizontalOptions="FillAndExpand"/>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+ï»¿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Storia.UI.Maui.ViewModels"
@@ -10,7 +10,7 @@
 
     <Grid RowDefinitions="Auto, *, Auto">
 
-        <!-- 1. ÁREA DE BUSCA -->
+        <!-- 1. ï¿½REA DE BUSCA -->
         <Frame Grid.Row="0" Padding="10" Margin="10" BorderColor="{StaticResource MidGray}">
             <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
                 <Entry Grid.Column="0" 
@@ -26,7 +26,7 @@
             </Grid>
         </Frame>
 
-        <!-- 2. ÁREA DO CARRINHO (LISTA DE ITENS) -->
+        <!-- 2. ï¿½REA DO CARRINHO (LISTA DE ITENS) -->
         <CollectionView Grid.Row="1" ItemsSource="{Binding CartItems}" Margin="10,0">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="dto:CartItemDto">
@@ -52,7 +52,7 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- 3. ÁREA DE RESUMO E FINALIZAÇÃO -->
+        <!-- 3. ï¿½REA DE RESUMO E FINALIZAï¿½ï¿½O -->
         <Frame Grid.Row="2" Padding="15" Margin="10" BackgroundColor="{StaticResource PrimaryDark}" CornerRadius="12">
             <Grid ColumnDefinitions="*, Auto">
                 <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">

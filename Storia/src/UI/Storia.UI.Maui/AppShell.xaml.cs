@@ -1,4 +1,4 @@
-using Storia.UI.Maui.Views;
+Ôªøusing Storia.UI.Maui.Views;
 
 namespace Storia.UI.Maui
 {
@@ -8,9 +8,9 @@ namespace Storia.UI.Maui
         {
             InitializeComponent();
 
-            // Registra as rotas para navegaÁ„o.
-            // Isso conecta a string de rota (ex: "ProductManagementPage") com o tipo da p·gina.
-            // … uma boa pr·tica para uma navegaÁ„o robusta e program·tica.
+            // Registra as rotas para navega√ß√£o.
+            // Isso conecta a string de rota (ex: "ProductManagementPage") com o tipo da p√°gina.
+            // √â uma boa pr√°tica para uma navega√ß√£o robusta e program√°tica.
             Routing.RegisterRoute(nameof(DashboardPage), typeof(DashboardPage));
             Routing.RegisterRoute(nameof(PointOfSalePage), typeof(PointOfSalePage));
             Routing.RegisterRoute(nameof(ProductManagementPage), typeof(ProductManagementPage));

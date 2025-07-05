@@ -21,7 +21,7 @@ namespace Storia.UI.Maui
         {
             var builder = MauiApp.CreateBuilder();
             builder
-                .UseMauiApp(serviceProvider => serviceProvider.GetRequiredService<App>())
+                .UseMauiApp<App>() // A forma correta e padrão
                 .UseMauiCommunityToolkit() // A chamada para o Community Toolkit está aqui, no lugar certo.
                 .ConfigureFonts(fonts =>
                 {

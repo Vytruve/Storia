@@ -1,16 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Maui">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<!-- Target Framework para Windows -->
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<OutputType>WinExe</OutputType>
 		<RootNamespace>Storia.UI.Maui</RootNamespace>
+
+		<!-- Configurações Essenciais do MAUI -->
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
+		<EnableDefaultMauiItems>true</EnableDefaultMauiItems>
+		<!-- A CORREÇÃO DEFINITIVA -->
+
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-
-		<!-- LINHA DA CORREÇÃO ADICIONADA AQUI -->
 		<WindowsPackageType>None</WindowsPackageType>
 
 		<!-- Display Information -->
@@ -20,19 +23,17 @@
 		<ApplicationVersion>1</ApplicationVersion>
 
 		<!-- Supported OS Platform Version para Windows -->
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
 
-	<!-- O resto do arquivo permanece o mesmo... -->
-
 	<ItemGroup>
-		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#007ACC" />
+		<!-- Recursos do MAUI -->
+		<MauiAppIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#007ACC" />
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#007ACC" BaseSize="128,128" />
 		<MauiImage Include="Resources\Images\*" />
 		<MauiFont Include="Resources\Fonts\*" />
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#007ACC" BaseSize="128,128" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -42,6 +43,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Dependências de Pacotes NuGet -->
 		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
@@ -53,6 +55,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Referências de Projeto -->
 		<ProjectReference Include="..\..\Application\Storia.Application\Storia.Application.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Storia.Infrastructure\Storia.Infrastructure.csproj" />
 	</ItemGroup>
