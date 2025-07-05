@@ -24,8 +24,6 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore Storia.sln
 
-      # Passo crucial: Criar um certificado de teste para assinar o pacote MSIX.
-      # O Windows exige que todos os pacotes MSIX sejam assinados.
       - name: Create Test Certificate
         run: |
           Add-Type -AssemblyName System.Security
@@ -35,13 +33,12 @@ jobs:
         shell: pwsh
 
       # Publica o aplicativo, gerando um pacote MSIX assinado.
-      # Note as propriedades -p: que estamos passando.
       - name: Publish MSIX Package
         run: >
           dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj 
           -f net8.0-windows10.0.19041.0 
           -c Release 
-          -p:WindowsPackageType=Msix 
+          -p:WindowsPackageType=MSIX # <-- CORREÇÃO: 'Msix' alterado para 'MSIX'
           -p:WindowsAppPackageVersion=1.0.${{ github.run_number }} 
           -p:AppxPackageSigningEnabled=true 
           -p:PackageCertificateThumbprint="" 
