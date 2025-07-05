@@ -19,17 +19,18 @@ jobs:
         with:
           dotnet-version: 8.0.100
 
-
       - name: 📦 Restaurar workloads (MAUI, etc)
         run: dotnet workload restore
 
-        
       - name: 🧩 Restaurar pacotes NuGet
         run: dotnet restore
 
-
       - name: 🏗️ Build do projeto MAUI
-        run: dotnet build src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj --configuration Release --no-restore
+        run: |
+          dotnet build src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj \
+            --configuration Release \
+            --no-restore \
+            -p:EnableWindowsTargeting=true
 
       - name: 🧪 Rodar testes (se existirem)
         run: |
@@ -44,5 +45,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: |
-            src/UI/Storia.UI.Maui/bin/Release
+          path: src/UI/Storia.UI.Maui/bin/Release
