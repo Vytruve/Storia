@@ -1,59 +1,58 @@
-# Nome do Workflow: Aparecerá na aba "Actions" do seu repositório GitHub.
-name: Build Storia ERP for Windows
+name: Build e Pacote MSIX para Storia ERP
 
-# Gatilhos: Define quando o workflow será executado.
 on:
-  # Executa em pushes para a branch 'main'.
   push:
     branches: [ "main" ]
-  
-  # Permite que você execute este workflow manualmente a partir da aba Actions.
   workflow_dispatch:
 
-# Trabalhos: Define uma ou mais tarefas a serem executadas.
 jobs:
   build:
-    # Ambiente: Especifica que o trabalho deve ser executado em uma máquina virtual Windows.
-    # Isso é OBRIGATÓRIO para compilar um aplicativo MAUI para Windows.
     runs-on: windows-latest
 
-    # Passos: A sequência de tarefas que compõem o trabalho.
     steps:
-      # 1. Checkout do Código
-      # Baixa o código do seu repositório para a máquina virtual.
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Configurar o SDK do .NET
-      # Instala a versão do SDK do .NET especificada no seu arquivo global.json.
-      # Esta é a melhor prática para garantir consistência.
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
 
-      # 3. Instalar as Cargas de Trabalho do .NET MAUI
-      # Passo CRUCIAL. A máquina virtual padrão não vem com as ferramentas MAUI.
       - name: Install MAUI Workloads
         run: dotnet workload install maui
 
-      # 4. Restaurar Dependências NuGet
-      # Baixa todos os pacotes NuGet referenciados nos seus projetos.
       - name: Restore NuGet packages
         run: dotnet restore Storia.sln
 
-      # 5. Publicar o Aplicativo
-      # Compila o aplicativo em modo Release e o publica em uma pasta.
-      # O comando 'publish' é ideal para criar uma versão distribuível.
-      - name: Publish MAUI App for Windows
-        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -c Release -f net8.0-windows10.0.19041.0 -o ./publish
+      # Passo crucial: Criar um certificado de teste para assinar o pacote MSIX.
+      # O Windows exige que todos os pacotes MSIX sejam assinados.
+      - name: Create Test Certificate
+        run: |
+          Add-Type -AssemblyName System.Security
+          $cert = New-SelfSignedCertificate -DnsName "CN=TruveSoftware" -CertStoreLocation "Cert:\CurrentUser\My" -KeySpec KeyExchange -Type CodeSigningCert
+          $password = ConvertTo-SecureString -String "1234" -Force -AsPlainText
+          Export-PfxCertificate -Cert $cert -FilePath ".\storia_cert.pfx" -Password $password
+        shell: pwsh
 
-      # 6. Carregar o Artefato de Build
-      # Pega a pasta 'publish' e a salva como um artefato que pode ser baixado.
-      - name: Upload build artifact
+      # Publica o aplicativo, gerando um pacote MSIX assinado.
+      # Note as propriedades -p: que estamos passando.
+      - name: Publish MSIX Package
+        run: >
+          dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj 
+          -f net8.0-windows10.0.19041.0 
+          -c Release 
+          -p:WindowsPackageType=Msix 
+          -p:WindowsAppPackageVersion=1.0.${{ github.run_number }} 
+          -p:AppxPackageSigningEnabled=true 
+          -p:PackageCertificateThumbprint="" 
+          -p:PackageCertificatePath=".\storia_cert.pfx" 
+          -p:PackageCertificatePassword="1234"
+        shell: pwsh
+      
+      # Carrega o pacote MSIX como artefato.
+      - name: Upload MSIX Artifact
         uses: actions/upload-artifact@v4
         with:
-          # Nome do artefato que aparecerá para download.
-          name: storia-erp-windows
-          # Caminho da pasta que contém o executável e suas dependências.
-          path: ./publish
+          name: storia-erp-installer
+          # O caminho para o pacote MSIX gerado.
+          path: src/UI/Storia.UI.Maui/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/
