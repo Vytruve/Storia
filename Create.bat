@@ -4,7 +4,7 @@ echo      Criando a Solucao Storia (.sln)
 echo =================================================
 echo.
 
-cd Storia
+ 
 
 dotnet new sln -n Storia
 
