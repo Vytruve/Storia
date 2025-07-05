@@ -35,11 +35,11 @@ jobs:
     - name: Restaurar pacotes NuGet
       run: dotnet restore Storia.sln
 
-    # Passo 5: Publicar o aplicativo MAUI para Windows
-    # Este comando compila e publica o projeto específico para a plataforma e arquitetura desejadas.
-    # Ele substitui a necessidade de um 'dotnet build' separado para a solução com um RuntimeIdentifier.
+    # Passo 5: Publicar o aplicativo MAUI para Windows (Unpackaged)
+    # A propriedade '-p:WindowsPackageType=None' é a chave para corrigir o erro MSB4018.
+    # Ela instrui o build a gerar um executável padrão (.exe) em vez de um pacote MSIX.
     - name: Publicar o aplicativo MAUI para Windows
-      run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win-x64 -o ./publish
+      run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win-x64 -p:WindowsPackageType=None -o ./publish
 
     # Passo 6: Criar um arquivo ZIP da pasta publicada
     - name: Criar arquivo ZIP
