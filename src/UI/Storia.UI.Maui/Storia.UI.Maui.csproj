@@ -29,6 +29,13 @@
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<OutputType>WinExe</OutputType>
+		<RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+		<WindowsPackageType>Msi</WindowsPackageType> 
+		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained> 
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- Recursos do MAUI -->
 		<MauiAppIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#007ACC" />
