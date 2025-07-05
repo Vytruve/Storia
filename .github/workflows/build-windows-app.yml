@@ -1,7 +1,6 @@
 # Nome do Workflow: Aparecerá na aba "Actions" do seu repositório GitHub.
 name: Build Storia ERP Installer for Windows
 
-# Gatilhos: define quando o workflow será acionado.
 on:
   push:
     branches: [ "main" ]
@@ -9,38 +8,26 @@ on:
 
 jobs:
   build:
-    # Executar em VM Windows
     runs-on: windows-latest
 
     steps:
-      # 1. Faz checkout do repositório
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Configura o SDK .NET conforme global.json
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
 
-      # 3. Instala workloads do MAUI
       - name: Install MAUI workloads
         run: dotnet workload install maui
 
-      # 4. Restaura pacotes NuGet
       - name: Restore NuGet packages
         run: dotnet restore Storia.sln
 
-      # 5. Publica o projeto como MSIX
       - name: Publish MAUI App for Windows
-        run: |
-          dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj \
-            -f net8.0-windows10.0.19041.0 \
-            -c Release \
-            -p:GenerateAppxPackageOnBuild=true \
-            -o publish
+        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:GenerateAppxPackageOnBuild=true -o publish
 
-      # 6. Upload do instalador .msix como artefato
       - name: Upload MSIX installer
         uses: actions/upload-artifact@v4
         with:
