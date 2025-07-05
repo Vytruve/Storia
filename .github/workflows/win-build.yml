@@ -1,1 +1,61 @@
+# Nome do Workflow: Descreve o que ele faz.
+name: Build Windows MSIX Installer
 
+# Gatilhos (Triggers): Define quando o workflow será executado.
+on:
+  # Executa ao fazer push para a branch 'main'.
+  push:
+    branches: [ "main" ]
+  # Permite que você execute este workflow manualmente na aba Actions do GitHub.
+  workflow_dispatch:
+
+jobs:
+  build:
+    # Máquina Virtual: Especifica que o trabalho deve ser executado em uma máquina Windows.
+    runs-on: windows-latest
+
+    steps:
+      # 1. Checkout do Código
+      # Baixa o código do seu repositório para a máquina virtual.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configurar o .NET SDK
+      # Instala a versão do .NET SDK especificada no seu arquivo global.json (8.0.x).
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # 3. Instalar a Carga de Trabalho do .NET MAUI
+      # Instala as ferramentas necessárias para compilar projetos MAUI.
+      - name: Install MAUI Workload
+        run: dotnet workload install maui
+
+      # 4. Restaurar Dependências
+      # Baixa todos os pacotes NuGet necessários para o seu projeto.
+      - name: Restore Dependencies
+        run: dotnet restore "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj"
+
+      # 5. Publicar a Aplicação como MSIX
+      # Compila e empacota a aplicação no formato MSIX para Windows.
+      - name: Publish MAUI App for Windows
+        # O comando 'dotnet publish' é usado para criar o pacote.
+        # -f: Especifica o framework de destino. O csproj do MAUI contém múltiplos, então precisamos escolher o do Windows.
+        # -c: Compila em modo Release para otimização.
+        # /p:GenerateAppxPackageOnBuild=true: Instrução para criar o pacote MSIX.
+        # /p:AppxPackageOutput: Define um diretório de saída para o instalador, facilitando encontrá-lo.
+        # /p:AppxPackageSigningEnabled=false: Desabilita a assinatura digital para simplificar.
+        #    -> Nota: Sem assinatura, o pacote só pode ser instalado em máquinas com "Modo de Desenvolvedor" ativado.
+        #    -> Para produção, você precisaria de um certificado digital e habilitar a assinatura.
+        run: dotnet publish "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj" -f:net8.0-windows10.0.19041.0 -c:Release /p:GenerateAppxPackageOnBuild=true /p:AppxPackageOutput=../msix /p:AppxPackageSigningEnabled=false
+
+      # 6. Carregar o Artefato
+      # Faz o upload do instalador MSIX gerado para que você possa baixá-lo.
+      - name: Upload MSIX Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Nome que o artefato terá no GitHub.
+          name: msix-installer
+          # Caminho para a pasta que contém o instalador.
+          path: ./msix/
