@@ -27,9 +27,9 @@ jobs:
       run: dotnet restore "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj"
 
     # PASSO ATUALIZADO AQUI!
-    # Adicionamos /p:WindowsPackageType=Msix para resolver o conflito de configuração.
+    # Corrigido "Msix" para "MSIX" (tudo em maiúsculas).
     - name: Build and Package
-      run: dotnet publish "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj" -f net8.0-windows10.0.19041.0 -c Release /p:GenerateAppxPackageOnBuild=true /p:WindowsPackageType=Msix /p:AppxPackageOutput=../publish/
+      run: dotnet publish "src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj" -f net8.0-windows10.0.19041.0 -c Release /p:GenerateAppxPackageOnBuild=true /p:WindowsPackageType=MSIX /p:AppxPackageOutput=../publish/
 
     - name: Upload Installer Artifact
       uses: actions/upload-artifact@v4
