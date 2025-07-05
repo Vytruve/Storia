@@ -44,7 +44,7 @@ jobs:
           -p:PackageCertificatePath=".\storia_cert.pfx" 
           -p:PackageCertificatePassword="1234"
         shell: pwsh
-      
+#sla
       - name: Upload MSIX Artifact
         uses: actions/upload-artifact@v4
         with:
