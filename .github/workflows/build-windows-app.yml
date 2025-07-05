@@ -1,4 +1,4 @@
-name: Build Storia ERP Installer for Windows
+name: Build Storia ERP for Windows
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-package:
     runs-on: windows-latest
 
     steps:
@@ -25,17 +25,14 @@ jobs:
         run: dotnet restore Storia.sln
 
       # 5. Publicar o Aplicativo como um Pacote MSIX
-      # O comando é o mesmo, mas como o .csproj foi alterado, o resultado
-      # será um pacote MSIX em vez de uma pasta de arquivos soltos.
-      - name: Publish MAUI App for Windows
-        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -c Release -f net8.0-windows10.0.19041.0
+      # Adicionamos a propriedade '-p:PackageMSIX=true' para ativar o perfil de publicação MSIX no .csproj
+      - name: Publish MAUI App as MSIX Installer
+        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -c Release -f net8.0-windows10.0.19041.0 -p:PackageMSIX=true
 
       # 6. Carregar o Instalador MSIX como Artefato
-      # O caminho agora procura pelo arquivo .msix dentro da pasta AppPackages.
+      # Este passo permanece o mesmo, procurando pelo arquivo .msix gerado.
       - name: Upload MSIX Installer
         uses: actions/upload-artifact@v4
         with:
           name: storia-erp-installer
-          # Usamos um wildcard (**) para encontrar o arquivo .msix em qualquer subdiretório.
-          # Isso é mais robusto do que um caminho fixo.
           path: '**/AppPackages/**/*.msix'
