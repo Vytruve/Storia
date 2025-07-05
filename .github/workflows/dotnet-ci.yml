@@ -33,11 +33,11 @@ jobs:
 
     # Passo 4: Restaurar as dependências NuGet
     - name: Restaurar pacotes NuGet
-      run: dotnet restore Storia.sln
+      run: dotnet restore Storia.sln --runtime win-x64
 
     # Passo 5: Compilar a solução (sem RID, para validar as bibliotecas)
     - name: Compilar a solução
-      run: dotnet build Storia.sln --configuration Release --no-restore
+      run: dotnet build Storia.sln --configuration Release --no-restore --runtime win-x64
 
     # Passo 6: Publicar o aplicativo de UI (O passo correto para criar o executável)
     - name: Publicar o aplicativo MAUI para Windows
