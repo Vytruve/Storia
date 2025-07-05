@@ -39,13 +39,11 @@ jobs:
       # 5. Publicar o Aplicativo e Gerar o Pacote MSIX
       # A propriedade '-p:GenerateAppxPackageOnBuild=true' é a chave para forçar a criação do instalador.
       - name: Publish MAUI App and Create MSIX Package
-        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -c Release -f net8.0-windows10.0.19041.0 -p:GenerateAppxPackageOnBuild=true -o ./publish
-
+        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -c Release -f net8.0-windows10.0.19041.0 -o ./publish
       # 6. Carregar o Instalador MSIX como Artefato
       # Este passo agora encontrará o arquivo .msix porque o passo anterior o criou.
       - name: Upload MSIX Installer
         uses: actions/upload-artifact@v4
         with:
           name: storia-erp-installer
-          # Este padrão robusto encontrará o arquivo .msix onde quer que ele esteja dentro da pasta de publicação.
           path: './publish/**/*.msix'
