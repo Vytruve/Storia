@@ -1,58 +1,71 @@
 # Nome do Workflow
 name: Build e Release do Storia ERP
 
-# Gatilhos
+# Gatilhos do Workflow
 on:
+  # Executa em pushes para a branch 'main'
   push:
     branches: [ main ]
+  # Executa em pull requests direcionados à branch 'main'
   pull_request:
     branches: [ main ]
 
+# Definição dos Jobs
 jobs:
   # --------------------------------------------------
   # JOB ÚNICO: Construir, Publicar e Criar Release
   # --------------------------------------------------
   build-and-release:
-    # O ambiente de execução
+    # Define o ambiente de execução como a última versão do Windows Server
     runs-on: windows-latest
 
+    # Passos a serem executados no job
     steps:
-    # Passo 1: Obter o código
+    # Passo 1: Obter o código do repositório
     - name: Checkout do código
       uses: actions/checkout@v4
 
-    # Passo 2: Configurar o .NET SDK
+    # Passo 2: Configurar o ambiente .NET SDK com base no seu arquivo global.json
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
 
-    # Passo 3: Instalar a carga de trabalho do .NET MAUI
+    # Passo 3: Instalar as ferramentas de build do .NET MAUI para Windows
     - name: Instalar carga de trabalho MAUI
       run: dotnet workload install maui-windows
 
-    # Passo 4: Restaurar as dependências NuGet da solução
+    # Passo 4: Restaurar todas as dependências NuGet da solução
     - name: Restaurar pacotes NuGet
       run: dotnet restore Storia.sln
 
-    # Passo 5: Publicar o aplicativo MAUI para Windows (Unpackaged e Self-Contained)
-    # A propriedade '-p:WindowsAppSDKSelfContained=true' é a chave final.
-    # Ela garante que o Windows App SDK seja empacotado junto com o app,
-    # evitando que o processo de build procure por arquivos de manifesto (AppxManifest) em locais inesperados.
-    - name: Publicar o aplicativo MAUI para Windows
-      run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win-x64 -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -o ./publish
+    # Passo 5: Compilar o projeto de UI (MAUI) especificamente
+    # Esta etapa é crucial. Compilamos o projeto (não a solução) com o RuntimeIdentifier.
+    # Isso força a geração correta dos arquivos intermediários que estavam faltando.
+    - name: Compilar o projeto MAUI para Windows
+      run: dotnet build src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win-x64
 
-    # Passo 6: Criar um arquivo ZIP da pasta publicada
+    # Passo 6: Publicar o aplicativo MAUI
+    # Agora, publicamos usando '--no-build' para garantir que ele use os artefatos da compilação anterior.
+    # As propriedades de empacotamento guiam a criação da pasta final.
+    - name: Publicar o aplicativo MAUI para Windows
+      run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win-x64 -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true --no-build -o ./publish
+
+    # Passo 7: Compactar a pasta de publicação em um arquivo ZIP
     - name: Criar arquivo ZIP
       run: Compress-Archive -Path ./publish/* -DestinationPath storia-erp-windows.zip
 
-    # Passo 7: Criar a Release no GitHub e anexar o ZIP
+    # Passo 8: Criar uma Release no GitHub e anexar o arquivo ZIP
     - name: Criar Release no GitHub
-      # Condição: Só executa este passo se o gatilho foi um 'push' para a branch 'main'
+      # Condição: Só executa este passo se o evento for um 'push' na branch 'main'
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v2
       with:
+        # Nome da tag, usando o número da execução para garantir que seja única
         tag_name: "release-${{ github.run_number }}"
+        # Nome da Release
         name: "Storia ERP Release ${{ github.run_number }}"
+        # Corpo/descrição da Release
         body: "Release automática gerada pelo GitHub Actions."
+        # Arquivos a serem anexados à Release
         files: storia-erp-windows.zip
