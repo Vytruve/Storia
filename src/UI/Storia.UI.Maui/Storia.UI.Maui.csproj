@@ -10,7 +10,14 @@
 		<EnableDefaultMauiItems>true</EnableDefaultMauiItems>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		
+
+        <!-- =================== CORREÇÃO FINAL E EXPLÍCITA =================== -->
+        <!-- Dizemos explicitamente que queremos um pacote do tipo MSIX. -->
+        <WindowsPackageType>MSIX</WindowsPackageType>
+        
+        <!-- Gera um certificado de teste para assinar o pacote MSIX. -->
+        <CreatePackageCertificate>true</CreatePackageCertificate>
+        <!-- ================================================================== -->
 		<!-- Display Information -->
 		<ApplicationTitle>Storia ERP</ApplicationTitle>
 		<ApplicationId>com.truvesoftware.storia</ApplicationId>
