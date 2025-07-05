@@ -2,10 +2,10 @@
 using Storia.Infrastructure.Persistence;
 using Storia.UI.Maui.ViewModels;
 using Storia.UI.Maui.Views;
+using System.Diagnostics; // Adicionado para logar o erro
 
 namespace Storia.UI.Maui
 {
-    // A palavra-chave 'partial' é a correção mais importante.
     public partial class App : Microsoft.Maui.Controls.Application
     {
         private readonly IServiceProvider _serviceProvider;
@@ -13,8 +13,6 @@ namespace Storia.UI.Maui
 
         public App(IServiceProvider serviceProvider)
         {
-            // Esta chamada conecta o XAML ao C#. Ela SÓ funciona se a classe for 'partial'
-            // e o 'x:Class' no XAML estiver correto.
             InitializeComponent();
             _serviceProvider = serviceProvider;
         }
@@ -23,48 +21,73 @@ namespace Storia.UI.Maui
         {
             await ShowSplashScreen();
 
-            // Verificação de nulo para garantir que a janela do splash foi criada.
             if (_splashWindow == null)
             {
-                // Se algo deu errado, apenas carregue a página principal para evitar um crash.
                 MainPage = _serviceProvider.GetRequiredService<AppShell>();
                 return;
             }
 
-            await Task.Run(async () =>
-            {
-                // Acessa o ViewModel de forma segura.
-                var splashViewModel = _splashWindow.Page?.BindingContext as SplashViewModel;
+            // Executa a inicialização e captura qualquer erro
+            bool initializationSucceeded = await InitializeInBackground();
 
-                await UpdateStatus(splashViewModel, "Verificando banco de dados...");
-                using (var scope = _serviceProvider.CreateScope())
+            if (initializationSucceeded)
+            {
+                MainPage = _serviceProvider.GetRequiredService<AppShell>();
+                if (_splashWindow != null)
                 {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                    await dbContext.Database.MigrateAsync();
+                    await Task.Delay(100);
+                    CloseWindow(_splashWindow);
                 }
-
-                await UpdateStatus(splashViewModel, "Iniciando serviços...");
-                await Task.Delay(1000);
-
-                await UpdateStatus(splashViewModel, "Pronto!");
-                await Task.Delay(500);
-            });
-
-            MainPage = _serviceProvider.GetRequiredService<AppShell>();
-
-            // A verificação de nulo aqui já existia e está correta.
-            if (_splashWindow != null)
+            }
+            else
             {
-                await Task.Delay(100);
+                // Se a inicialização falhou, o splash screen já mostrou o erro.
+                // Podemos fechar o app ou mostrar uma página de erro mínima.
+                // Por enquanto, vamos apenas fechar a janela do splash.
+                await Task.Delay(5000); // Deixa o usuário ler o erro
                 CloseWindow(_splashWindow);
+            }
+        }
+
+        private async Task<bool> InitializeInBackground()
+        {
+            var splashViewModel = _splashWindow?.Page?.BindingContext as SplashViewModel;
+
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    await UpdateStatus(splashViewModel, "Verificando banco de dados...");
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                        await dbContext.Database.MigrateAsync();
+                    }
+
+                    await UpdateStatus(splashViewModel, "Iniciando serviços...");
+                    await Task.Delay(1000);
+
+                    await UpdateStatus(splashViewModel, "Pronto!");
+                    await Task.Delay(500);
+                });
+                return true; // Sucesso
+            }
+            catch (Exception ex)
+            {
+                // Loga o erro para o Output de depuração
+                Debug.WriteLine($"FATAL INITIALIZATION ERROR: {ex}");
+
+                // Atualiza a UI para mostrar a falha
+                await UpdateStatus(splashViewModel, $"Erro na inicialização: {ex.Message}");
+                return false; // Falha
             }
         }
 
         private async Task ShowSplashScreen()
         {
+            // ... (este método permanece o mesmo)
             var splashPage = _serviceProvider.GetRequiredService<SplashPage>();
             _splashWindow = new Window(splashPage) { Width = 640, Height = 400 };
-
 #if WINDOWS
             var nativeWindow = _splashWindow.Handler.PlatformView as Microsoft.UI.Xaml.Window;
             if (nativeWindow != null)
@@ -73,13 +96,13 @@ namespace Storia.UI.Maui
                 presenter?.SetBorderAndTitleBar(false, false);
             }
 #endif
-
             OpenWindow(_splashWindow);
             await Task.CompletedTask;
         }
 
         private async Task UpdateStatus(SplashViewModel? vm, string message)
         {
+            // ... (este método permanece o mesmo)
             if (vm != null)
             {
                 MainThread.BeginInvokeOnMainThread(() => vm.StatusMessage = message);

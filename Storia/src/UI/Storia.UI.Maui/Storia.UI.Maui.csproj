@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<!-- Target Framework para Windows -->
-		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<!-- Target Framework para Windows, agora usando .NET 9 -->
+		<TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
+		<!-- ATUALIZADO -->
 		<OutputType>WinExe</OutputType>
 		<RootNamespace>Storia.UI.Maui</RootNamespace>
 
@@ -10,16 +11,20 @@
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<EnableDefaultMauiItems>true</EnableDefaultMauiItems>
-		<!-- A CORREÇÃO DEFINITIVA -->
 
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+
+		<!-- Configurações para App Windows Não Empacotado -->
 		<WindowsPackageType>None</WindowsPackageType>
+		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+		<WindowsAppSdkBootstrapInitialize>true</WindowsAppSdkBootstrapInitialize>
 
 		<!-- Display Information -->
 		<ApplicationTitle>Storia ERP</ApplicationTitle>
 		<ApplicationId>com.truvesoftware.storia</ApplicationId>
-		<ApplicationDisplayVersion>1.0.0-win</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>1.0.0-win-net9</ApplicationDisplayVersion>
+		<!-- ATUALIZADO -->
 		<ApplicationVersion>1</ApplicationVersion>
 
 		<!-- Supported OS Platform Version para Windows -->
@@ -44,13 +49,17 @@
 
 	<ItemGroup>
 		<!-- Dependências de Pacotes NuGet -->
+		<!-- As versões dos pacotes MAUI e EF Core podem ser atualizadas para as versões preview do .NET 9 -->
+		<!-- Por enquanto, manteremos as versões estáveis que são compatíveis. -->
 		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.20" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.20" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.0-preview.3.10415" />
+		<!-- ATUALIZADO -->
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.0-preview.3.10415" />
+		<!-- ATUALIZADO -->
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 	</ItemGroup>
 
