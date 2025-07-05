@@ -1,5 +1,7 @@
+# Nome do Workflow
 name: Build e Release do Storia ERP
 
+# Gatilhos
 on:
   push:
     branches: [ main ]
@@ -7,56 +9,50 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  # --------------------------------------------------
+  # JOB ÚNICO: Construir, Publicar e Criar Release
+  # --------------------------------------------------
+  build-and-release:
+    # O ambiente de execução
     runs-on: windows-latest
 
-    # Definindo variáveis para reutilização e clareza
-    env:
-      TARGET_FRAMEWORK: net8.0-windows10.0.19041.0
-      RUNTIME_IDENTIFIER: win10-x64
-
     steps:
+    # Passo 1: Obter o código
     - name: Checkout do código
       uses: actions/checkout@v4
 
+    # Passo 2: Configurar o .NET SDK
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
 
-    - name: Instalar carga de trabalho MAUI para Windows
+    # Passo 3: Instalar a carga de trabalho do .NET MAUI
+    - name: Instalar carga de trabalho MAUI
       run: dotnet workload install maui-windows
 
-    # CORREÇÃO APLICADA AQUI: Especificando o RuntimeIdentifier no restore
+    # Passo 4: Restaurar as dependências NuGet
     - name: Restaurar pacotes NuGet
-      run: dotnet restore Storia.sln -r ${{ env.RUNTIME_IDENTIFIER }}
+      run: dotnet restore Storia.sln
 
-    # CORREÇÃO APLICADA AQUI: Especificando o TargetFramework e o RuntimeIdentifier no build
+    # Passo 5: Compilar a solução (sem RID, para validar as bibliotecas)
     - name: Compilar a solução
-      run: dotnet build src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f ${{ env.TARGET_FRAMEWORK }} -r ${{ env.RUNTIME_IDENTIFIER }} --configuration Release --no-restore
+      run: dotnet build Storia.sln --configuration Release --no-restore
 
-    # Passo de empacotamento permanece o mesmo, mas o caminho é mais previsível agora
-    - name: Empacotar artefatos
-      uses: actions/upload-artifact@v4
-      with:
-        name: storia-erp-windows
-        path: src/UI/Storia.UI.Maui/bin/Release/${{ env.TARGET_FRAMEWORK }}/${{ env.RUNTIME_IDENTIFIER }}/
+    # Passo 6: Publicar o aplicativo de UI (O passo correto para criar o executável)
+    - name: Publicar o aplicativo MAUI para Windows
+      # O comando 'publish' é o ideal para preparar para distribuição.
+      # Ele compila, pega todas as dependências e coloca em uma pasta de saída.
+      run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release --no-build -o ./publish
 
-  release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Baixar artefatos da build
-      uses: actions/download-artifact@v4
-      with:
-        name: storia-erp-windows
-
+    # Passo 7: Criar um arquivo ZIP da pasta publicada
     - name: Criar arquivo ZIP
-      run: zip -r storia-erp-windows.zip .
+      run: Compress-Archive -Path ./publish/* -DestinationPath storia-erp-windows.zip
 
+    # Passo 8: Criar a Release no GitHub e anexar o ZIP
     - name: Criar Release no GitHub
+      # Condição: Só executa este passo se o gatilho foi um 'push' para a branch 'main'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v2
       with:
         tag_name: "release-${{ github.run_number }}"
