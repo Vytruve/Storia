@@ -29,22 +29,21 @@ jobs:
       - name: Restaurar pacotes NuGet da solução
         run: dotnet restore Storia.sln
 
-      # 5) Restore específico do projeto MAUI para baixar runtime-pack win-x64
-      - name: Restaurar runtime-pack para MAUI
-        run: dotnet restore src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj --runtime win-x64
+      # 5) Restore específico do projeto MAUI para baixar o runtime-pack correto
+      - name: Restaurar runtime-pack para MAUI (win10‑x64)
+        run: dotnet restore src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj --runtime win10-x64
 
-      # 6) Build da solução (Release, sem RID)
+      # 6) Build da solução (Release)
       - name: Compilar a solução (Release)
-        run: |
-          dotnet build Storia.sln --configuration Release --no-restore
+        run: dotnet build Storia.sln --configuration Release --no-restore
 
-      # 7) Publish do projeto MAUI com RID
+      # 7) Publish do projeto MAUI com RID win10‑x64
       - name: Publicar o aplicativo MAUI para Windows
         run: |
           dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj \
             -f net8.0-windows10.0.19041.0 \
             -c Release \
-            -r win-x64 \
+            -r win10-x64 \
             --self-contained false \
             --no-build \
             -o ./publish
