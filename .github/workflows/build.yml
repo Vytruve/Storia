@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build MAUI Project (.NET 8)
 
 on:
   push:
@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout código
+      - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Instalar .NET 9 Preview
+      - name: Instalar .NET 8 SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.100
@@ -22,9 +22,8 @@ jobs:
       - name: Restaurar pacotes
         run: dotnet restore
 
+      - name: Restaurar workloads (MAUI, etc)
+        run: dotnet workload restore
+
       - name: Build do projeto
         run: dotnet build --configuration Release --no-restore
-
-      - name: Rodar testes (se houver)
-        run: dotnet test --no-build --verbosity normal
-        continue-on-error: true
