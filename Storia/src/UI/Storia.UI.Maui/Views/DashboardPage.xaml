@@ -20,7 +20,7 @@
 
                 <Label Text="Resumo do Dia" FontSize="28" FontAttributes="Bold" TextColor="{StaticResource PrimaryTextColor}"/>
 
-                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" Gap="15">
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="15" ColumnSpacing="15">
                     <Frame Grid.Row="0" Grid.Column="0" Style="{StaticResource CardStyle}">
                         <VerticalStackLayout Spacing="10">
                             <Label Text="" FontFamily="FASolid" FontSize="24" TextColor="{StaticResource SuccessColor}" />

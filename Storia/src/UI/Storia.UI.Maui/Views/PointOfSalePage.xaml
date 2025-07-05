@@ -3,74 +3,81 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Storia.UI.Maui.ViewModels"
              xmlns:dto="clr-namespace:Storia.Application.DTOs;assembly=Storia.Application"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Storia.UI.Maui.Views.PointOfSalePage"
              x:DataType="vm:PointOfSaleViewModel"
              Title="Ponto de Venda"
              BackgroundColor="{StaticResource PageBackgroundColor}">
 
-    <Grid RowDefinitions="Auto, *, Auto">
+	<Grid RowDefinitions="Auto, *, Auto">
 
-        <!-- 1. �REA DE BUSCA -->
-        <Frame Grid.Row="0" Padding="10" Margin="10" BorderColor="{StaticResource MidGray}">
-            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
-                <Entry Grid.Column="0" 
-                       Text="{Binding SearchQuery}" 
+		<!-- 1. ÁREA DE BUSCA -->
+		<Frame Grid.Row="0" Padding="10" Margin="10" BorderColor="{StaticResource MidGray}">
+			<Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+				<!-- CORREÇÃO APLICADA AQUI -->
+				<Entry Grid.Column="0"
+                       Text="{Binding SearchQuery}"
                        Placeholder="Digite o SKU e pressione Enter"
-                       CompletedCommand="{Binding AddProductToCartCommand}"
-                       VerticalOptions="Center"/>
-                <Button Grid.Column="1" 
-                        Text="Adicionar" 
+                       VerticalOptions="Center">
+					<Entry.Behaviors>
+						<toolkit:EventToCommandBehavior
+                            EventName="Completed"
+                            Command="{Binding AddProductToCartCommand}" />
+					</Entry.Behaviors>
+				</Entry>
+				<Button Grid.Column="1"
+                        Text="Adicionar"
                         Command="{Binding AddProductToCartCommand}"
                         Style="{StaticResource SecondaryButtonStyle}"
                         WidthRequest="120"/>
-            </Grid>
-        </Frame>
+			</Grid>
+		</Frame>
 
-        <!-- 2. �REA DO CARRINHO (LISTA DE ITENS) -->
-        <CollectionView Grid.Row="1" ItemsSource="{Binding CartItems}" Margin="10,0">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="dto:CartItemDto">
-                    <Frame Style="{StaticResource CardStyle}" Padding="10" Margin="0,5">
-                        <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" ColumnSpacing="10">
-                            <Label Grid.Column="0" Grid.Row="0" Text="{Binding Name}" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource PrimaryTextColor}"/>
-                            <Label Grid.Column="0" Grid.Row="1" Text="{Binding Price, StringFormat='Unit: {0:C}'}" FontSize="12" TextColor="{StaticResource SecondaryTextColor}"/>
+		<!-- 2. ÁREA DO CARRINHO (LISTA DE ITENS) -->
+		<CollectionView Grid.Row="1" ItemsSource="{Binding CartItems}" Margin="10,0">
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="dto:CartItemDto">
+					<Frame Style="{StaticResource CardStyle}" Padding="10" Margin="0,5">
+						<Grid ColumnDefinitions="*, Auto, Auto" RowDefinitions="Auto, Auto" ColumnSpacing="10">
+							<Label Grid.Column="0" Grid.Row="0" Text="{Binding Name}" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource PrimaryTextColor}"/>
+							<Label Grid.Column="0" Grid.Row="1" Text="{Binding Price, StringFormat='Unit: {0:C}'}" FontSize="12" TextColor="{StaticResource SecondaryTextColor}"/>
 
-                            <HorizontalStackLayout Grid.Column="1" Grid.Row="0" Spacing="10" VerticalOptions="Center">
-                                <Button Text="-" Command="{Binding DecrementQuantityCommand}" WidthRequest="40" HeightRequest="40" CornerRadius="20"/>
-                                <Label Text="{Binding Quantity}" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"/>
-                                <Button Text="+" Command="{Binding IncrementQuantityCommand}" WidthRequest="40" HeightRequest="40" CornerRadius="20"/>
-                            </HorizontalStackLayout>
+							<HorizontalStackLayout Grid.Column="1" Grid.Row="0" Spacing="10" VerticalOptions="Center">
+								<Button Text="-" Command="{Binding DecrementQuantityCommand}" WidthRequest="40" HeightRequest="40" CornerRadius="20"/>
+								<Label Text="{Binding Quantity}" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"/>
+								<Button Text="+" Command="{Binding IncrementQuantityCommand}" WidthRequest="40" HeightRequest="40" CornerRadius="20"/>
+							</HorizontalStackLayout>
 
-                            <Label Grid.Column="1" Grid.Row="1" Text="{Binding Subtotal, StringFormat='{0:C}'}" FontSize="16" FontAttributes="Bold" HorizontalOptions="End" TextColor="{StaticResource SuccessColor}"/>
+							<Label Grid.Column="1" Grid.Row="1" Text="{Binding Subtotal, StringFormat='{0:C}'}" FontSize="16" FontAttributes="Bold" HorizontalOptions="End" TextColor="{StaticResource SuccessColor}"/>
 
-                            <ImageButton Grid.Column="2" Grid.RowSpan="2" Source="delete.png" VerticalOptions="Center" HorizontalOptions="End" WidthRequest="25" HeightRequest="25"
+							<ImageButton Grid.Column="2" Grid.RowSpan="2" Source="delete.png" VerticalOptions="Center" HorizontalOptions="End" WidthRequest="25" HeightRequest="25"
                                          Command="{Binding Source={RelativeSource AncestorType={x:Type vm:PointOfSaleViewModel}}, Path=RemoveFromCartCommand}"
                                          CommandParameter="{Binding .}"/>
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+						</Grid>
+					</Frame>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
 
-        <!-- 3. �REA DE RESUMO E FINALIZA��O -->
-        <Frame Grid.Row="2" Padding="15" Margin="10" BackgroundColor="{StaticResource PrimaryDark}" CornerRadius="12">
-            <Grid ColumnDefinitions="*, Auto">
-                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                    <Label Text="TOTAL" TextColor="{StaticResource White}" FontSize="14"/>
-                    <Label Text="{Binding TotalAmount, StringFormat='{0:C}'}" TextColor="{StaticResource White}" FontSize="32" FontAttributes="Bold"/>
-                </VerticalStackLayout>
-                <Button Grid.Column="1" 
-                        Text="Finalizar Venda" 
+		<!-- 3. ÁREA DE RESUMO E FINALIZAÇÃO -->
+		<Frame Grid.Row="2" Padding="15" Margin="10" BackgroundColor="{StaticResource PrimaryDark}" CornerRadius="12">
+			<Grid ColumnDefinitions="*, Auto">
+				<VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+					<Label Text="TOTAL" TextColor="{StaticResource White}" FontSize="14"/>
+					<Label Text="{Binding TotalAmount, StringFormat='{0:C}'}" TextColor="{StaticResource White}" FontSize="32" FontAttributes="Bold"/>
+				</VerticalStackLayout>
+				<Button Grid.Column="1"
+                        Text="Finalizar Venda"
                         Command="{Binding FinalizeSaleCommand}"
-                        Style="{StaticResource PrimaryButtonStyle}" 
+                        Style="{StaticResource PrimaryButtonStyle}"
                         BackgroundColor="{StaticResource SuccessColor}"
                         HeightRequest="60"
                         WidthRequest="200"
                         VerticalOptions="Center"/>
-            </Grid>
-        </Frame>
+			</Grid>
+		</Frame>
 
-        <!-- INDICADOR DE CARREGAMENTO -->
-        <ActivityIndicator Grid.RowSpan="3" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" VerticalOptions="Center"/>
-    </Grid>
+		<!-- INDICADOR DE CARREGAMENTO -->
+		<ActivityIndicator Grid.RowSpan="3" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" VerticalOptions="Center"/>
+	</Grid>
 </ContentPage>

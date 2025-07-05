@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+ï»¿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -14,7 +14,7 @@
         <Setter Property="MinimumHeightRequest" Value="120"/>
     </Style>
 
-    <!-- Estilo para Botão Primário (Ação Principal) -->
+
     <Style x:Key="PrimaryButtonStyle" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
         <Setter Property="TextColor" Value="{StaticResource White}"/>
@@ -25,7 +25,6 @@
         <Setter Property="MinimumHeightRequest" Value="48"/>
     </Style>
 
-    <!-- Estilo para Botão Secundário (Ação Alternativa) -->
     <Style x:Key="SecondaryButtonStyle" TargetType="Button">
         <Setter Property="BackgroundColor" Value="Transparent"/>
         <Setter Property="TextColor" Value="{StaticResource Primary}"/>
