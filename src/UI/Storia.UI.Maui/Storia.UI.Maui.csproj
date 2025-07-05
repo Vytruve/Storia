@@ -11,14 +11,20 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	
-	        <!-- =================== CORREÇÃO FINAL E EXPLÍCITA =================== -->
-	        <!-- Dizemos explicitamente que queremos um pacote do tipo MSIX. -->
-	        <WindowsPackageType>MSIX</WindowsPackageType>
-	        
-	        <!-- Gera um certificado de teste para assinar o pacote MSIX. -->
-	        <CreatePackageCertificate>true</CreatePackageCertificate>
-	        <!-- ================================================================== -->
-		<!-- Display Information -->
+        <!-- =================== CONFIGURAÇÃO FINAL PARA MSIX =================== -->
+        <!-- 1. Aponta para o nosso manifesto manual. Isso resolve o erro. -->
+        <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+        <PackageCertificateThumbprint>$(PackageCertificateKeyFileThumbprint)</PackageCertificateThumbprint>
+        <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+        <AppxAutoIncrementPackageRevision>true</AppxAutoIncrementPackageRevision>
+        <AppxSymbolPackageEnabled>false</AppxSymbolPackageEnabled>
+        <GenerateAppxPackageOnBuild>true</GenerateAppxPackageOnBuild>
+        <AppxPackageManifest>Platforms\Windows\Package.appxmanifest</AppxPackageManifest>
+        
+        <!-- 2. Gera um certificado de teste para assinar o pacote. -->
+        <CreatePackageCertificate>true</CreatePackageCertificate>
+        <!-- ================================================================== -->
+
 		<ApplicationTitle>Storia ERP</ApplicationTitle>
 		<ApplicationId>com.truvesoftware.storia</ApplicationId>
 		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
