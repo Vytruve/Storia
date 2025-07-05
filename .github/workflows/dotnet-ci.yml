@@ -1,69 +1,134 @@
 # Nome do Workflow
-name: Build e Release do Storia ERP
+name: Build e Release do Storiapush:
+    branches: [ main ]
+  # Executa em pull requests direcionados à branch 'main'
+   ERP
 
 # Gatilhos do Workflow
 on:
   # Executa em pushes para a branch 'main'
-  push:
-    branches: [ main ]
-  # Executa em pull requests direcionados à branch 'main'
   pull_request:
     branches: [ main ]
 
 # Definição dos Jobs
 jobs:
-  # --------------------------------------------------
+  # ----------------push:
+    branches: [ main ]
+  # Executa em pull requests direcionados à branch 'main'
+  ----------------------------------
   # JOB ÚNICO: Construir, Publicar e Criar Release
-  # --------------------------------------------------
+  # pull_request:
+    branches: [ main ]
+
+# Definição dos Jobs
+jobs:
+  # ------------------------------------------------------------------
   build-and-release:
-    # Define o ambiente de execução como a última versão do Windows Server
+    # Define o ambiente de execução como a última versão----------------------------------
+  # JOB ÚNICO: Construir, Publicar e Criar Release
+  #  do Windows Server
     runs-on: windows-latest
 
     # Passos a serem executados no job
-    steps:
+--------------------------------------------------
+  build-and-release:
+    # Define o ambiente de execução como a última versão    steps:
     # Passo 1: Obter o código do repositório
-    - name: Checkout do código
+    - name: Checkout do Windows Server
+    runs-on: windows-latest
+
+    # Passos a serem executados no job
+ do código
       uses: actions/checkout@v4
 
-    # Passo 2: Configurar o ambiente .NET SDK com base no seu arquivo global.json
+    # Passo 2: Configurar o ambiente .    steps:
+    # Passo 1: Obter o código do repositório
+    - name: CheckoutNET SDK com base no seu arquivo global.json
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup- do código
+      uses: actions/checkout@v4
+
+    # Passo 2: Configurar o ambiente .dotnet@v4
       with:
         global-json-file: global.json
 
-    # Passo 3: Instalar as ferramentas de build do .NET MAUI para Windows
-    - name: Instalar carga de trabalho MAUI
+    # Passo NET SDK com base no seu arquivo global.json
+    - name: Setup .NET SDK
+      uses: actions/setup-3: Instalar as ferramentas de build do .NET MAUI para Windows
+    - name: Instalar carga dedotnet@v4
+      with:
+        global-json-file: global.json
+
+    # Passo  trabalho MAUI
+      run: dotnet workload install maui-windows
+
+    # Passo 4: Restaurar todas3: Instalar as ferramentas de build do .NET MAUI para Windows
+    - name: Instalar carga de as dependências NuGet da solução
+    - name: Restaurar pacotes NuGet
+      run: dotnet restore Storia.sln
+
+ trabalho MAUI
       run: dotnet workload install maui-windows
 
     # Passo 4: Restaurar todas as dependências NuGet da solução
     - name: Restaurar pacotes NuGet
       run: dotnet restore Storia.sln
 
-    # Passo 5: Compilar o projeto de UI (MAUI) especificamente
-    # Esta etapa é crucial. Compilamos o projeto (não a solução) com o RuntimeIdentifier.
-    # Isso força a geração correta dos arquivos intermediários que estavam faltando.
+    # Passo 5: Compilar o projeto de UI (MAUI) com as configurações de publicação
+    # EST    # Passo 5: Compilar o projeto de UI (MAUI) com as configurações de publicação
+    # ESTA É A CORREÇÃO DEFINITIVA.
+    # Aplicamos as propriedades para desativar o empacotamento MSIX diretamente no comando 'build'.
+    # Isso força a compilação a gerar os arquivos corretos para um executA É A CORREÇÃO DEFINITIVA.
+    # Aplicamos as propriedades para desativar o empacotamentoável padrão.
     - name: Compilar o projeto MAUI para Windows
-      run: dotnet build src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win-x64
+      run: dotnet build src/UI/ MSIX diretamente no comando 'build'.
+    # Isso força a compilação a gerar os arquivos corretos para um executStoria.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win-x64 -ável padrão.
+    - name: Compilar o projeto MAUI para Windows
+      run: dotnet build src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true
+
+    # Passo 0.19041.0 -c Release -p:RuntimeIdentifier=win-x64 -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true
 
     # Passo 6: Publicar o aplicativo MAUI
-    # Agora, publicamos usando '--no-build' para garantir que ele use os artefatos da compilação anterior.
-    # As propriedades de empacotamento guiam a criação da pasta final.
+    # A publicação agora é um passo simples, pois a compilação já6: Publicar o aplicativo MAUI
+    # A publicação agora é um passo simples, pois a compilação já fez o trabalho pesado.
+    # Usamos '--no-build' para garantir que ele apenas colete os artefatos já compilados.
     - name: Publicar o aplicativo MAUI para Windows
-      run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win-x64 -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true --no-build -o ./publish
+      run: dotnet fez o trabalho pesado.
+    # Usamos '--no-build' para garantir que ele apenas colete os arte publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0fatos já compilados.
+    - name: Publicar o aplicativo MAUI para Windows
+      run: dotnet-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-x64 --no-build --no-restore -o ./publish
 
-    # Passo 7: Compactar a pasta de publicação em um arquivo ZIP
+    # Passo 7: Compact-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=winar a pasta de publicação em um arquivo ZIP
     - name: Criar arquivo ZIP
-      run: Compress-Archive -Path ./publish/* -DestinationPath storia-erp-windows.zip
+      run: Compress-Archive -Path-x64 --no-build --no-restore -o ./publish
 
-    # Passo 8: Criar uma Release no GitHub e anexar o arquivo ZIP
+    # Passo 7: Compact ./publish/* -DestinationPath storia-erp-windows.zip
+
+    # Passo 8: Criar uma Release no GitHub ear a pasta de publicação em um arquivo ZIP
+    - name: Criar arquivo ZIP
+      run: Compress-Archive -Path anexar o arquivo ZIP
     - name: Criar Release no GitHub
-      # Condição: Só executa este passo se o evento for um 'push' na branch 'main'
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: softprops/action-gh-release@v2
+      # Condição: Só executa ./publish/* -DestinationPath storia-erp-windows.zip
+
+    # Passo 8: Criar uma Release no GitHub e este passo se o evento for um 'push' na branch 'main'
+      if: github.event_name == ' anexar o arquivo ZIP
+    - name: Criar Release no GitHub
+      # Condição: Só executapush' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh este passo se o evento for um 'push' na branch 'main'
+      if: github.event_name == '-release@v2
       with:
-        # Nome da tag, usando o número da execução para garantir que seja única
+        # Nome da tag, usando o número da execução para garantir quepush' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh seja única
+        tag_name: "release-${{ github.run_number }}"
+        # Nome da Release-release@v2
+      with:
+        # Nome da tag, usando o número da execução para garantir que
+        name: "Storia ERP Release ${{ github.run_number }}"
+        # Corpo/descrição da Release seja única
         tag_name: "release-${{ github.run_number }}"
         # Nome da Release
+        body: "Release automática gerada pelo GitHub Actions."
+        # Arquivos a serem anexados à Release
         name: "Storia ERP Release ${{ github.run_number }}"
         # Corpo/descrição da Release
         body: "Release automática gerada pelo GitHub Actions."
