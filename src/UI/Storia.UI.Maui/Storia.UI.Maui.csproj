@@ -34,7 +34,7 @@
 	<!-- Configuração para criar um executável não empacotado (padrão) -->
 	<!-- Ativada quando 'PackageMSIX' não for 'true' -->
 	<PropertyGroup Condition="'$(PackageMSIX)'!='true'">
-		<WindowsPackageType>None</WindowsPackageType>
+
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 		<WindowsAppSdkBootstrapInitialize>true</WindowsAppSdkBootstrapInitialize>
 		<ApplicationDisplayVersion>$(ApplicationDisplayVersion)-dev</ApplicationDisplayVersion>
