@@ -32,13 +32,12 @@ jobs:
           Export-PfxCertificate -Cert $cert -FilePath ".\storia_cert.pfx" -Password $password
         shell: pwsh
 
-      # Publica o aplicativo, gerando um pacote MSIX assinado.
       - name: Publish MSIX Package
         run: >
           dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj 
           -f net8.0-windows10.0.19041.0 
           -c Release 
-          -p:WindowsPackageType=MSIX # <-- CORREÇÃO: 'Msix' alterado para 'MSIX'
+          -p:WindowsPackageType=MSIX 
           -p:WindowsAppPackageVersion=1.0.${{ github.run_number }} 
           -p:AppxPackageSigningEnabled=true 
           -p:PackageCertificateThumbprint="" 
@@ -46,10 +45,8 @@ jobs:
           -p:PackageCertificatePassword="1234"
         shell: pwsh
       
-      # Carrega o pacote MSIX como artefato.
       - name: Upload MSIX Artifact
         uses: actions/upload-artifact@v4
         with:
           name: storia-erp-installer
-          # O caminho para o pacote MSIX gerado.
           path: src/UI/Storia.UI.Maui/bin/Release/net8.0-windows10.0.19041.0/win10-x64/AppPackages/
