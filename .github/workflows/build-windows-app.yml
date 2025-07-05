@@ -1,0 +1,61 @@
+# Nome do Workflow: Aparecerá na aba "Actions" do seu repositório no GitHub.
+name: Build Windows Release
+
+# Gatilhos: Quando este workflow deve ser executado.
+on:
+  # Executa em pushes para a branch 'main'.
+  push:
+    branches: [ "main" ]
+  # Executa em pull requests direcionados a branch 'main'.
+  pull_request:
+    branches: [ "main" ]
+  # Permite que você execute este workflow manualmente a partir da aba Actions.
+  workflow_dispatch:
+
+# Define os trabalhos (jobs) a serem executados.
+jobs:
+  build:
+    # O tipo de máquina virtual para executar o trabalho. Essencial ser Windows para compilar para Windows.
+    runs-on: windows-latest
+
+    # Passos que compõem o trabalho.
+    steps:
+      # 1. Checkout do código do seu repositório para a máquina virtual.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup do SDK do .NET, lendo a versão do nosso arquivo global.json.
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          # Aponta para o nosso global.json para garantir consistência de versão.
+          global-json-file: Storia/global.json
+
+      # 3. Instalação do workload do .NET MAUI. Passo crucial.
+      - name: Install .NET MAUI Workload
+        run: dotnet workload install maui
+        working-directory: ./Storia
+
+      # 4. Restaura todas as dependências do NuGet para a solução inteira.
+      - name: Restore NuGet Packages
+        run: dotnet restore Storia.sln
+        working-directory: ./Storia
+
+      # 5. Compila a solução inteira em modo Release.
+      - name: Build the Solution in Release Mode
+        run: dotnet build Storia.sln --configuration Release --no-restore
+        working-directory: ./Storia
+
+      # 6. Publica o aplicativo, criando uma pasta limpa com o executável e todas as suas dependências.
+      - name: Publish the Windows Executable
+        run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj -f net8.0-windows10.0.19041.0 -c Release -o ./publish
+        working-directory: ./Storia
+      
+      # 7. Empacota a pasta 'publish' como um artefato de build para download.
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Nome do arquivo .zip que será gerado.
+          name: Storia-ERP-Windows
+          # Caminho para os arquivos a serem empacotados.
+          path: Storia/publish/
