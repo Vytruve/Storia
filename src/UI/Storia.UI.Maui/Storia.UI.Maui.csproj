@@ -13,7 +13,7 @@
 		<SingleProject>true</SingleProject>
 		<EnableDefaultMauiItems>true</EnableDefaultMauiItems>
 		<!-- A CORREÇÃO DEFINITIVA -->
-		<!-- REMOVA ESTA LINHA -->
+		<!-- NÃO REMOVA ESTA LINHA -->
 		<WindowsPackageType>None</WindowsPackageType>
 
 		<ImplicitUsings>enable</ImplicitUsings>
