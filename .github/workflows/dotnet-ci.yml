@@ -11,34 +11,37 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout do código
-      uses: actions/checkout@v4
+      # 1) Obter o código
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        global-json-file: global.json
+      # 2) Configurar o .NET SDK
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
 
-    - name: Instalar carga de trabalho MAUI
-      run: dotnet workload install maui-windows
+      # 3) Instalar carga de trabalho MAUI
+      - name: Instalar carga de trabalho MAUI
+        run: dotnet workload install maui-windows
 
-    # 1) Restore geral da solução (sem RID)
-    - name: Restaurar pacotes NuGet da solução
-      run: dotnet restore Storia.sln
+      # 4) Restore da solução (sem RID)
+      - name: Restaurar pacotes NuGet da solução
+        run: dotnet restore Storia.sln
 
-    # 2) Restore específico do projeto MAUI para baixar runtime-pack win-x64
-    - name: Restaurar runtime-pack para MAUI
-      run: dotnet restore src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj --runtime win-x64
+      # 5) Restore específico do projeto MAUI para baixar runtime-pack win-x64
+      - name: Restaurar runtime-pack para MAUI
+        run: dotnet restore src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj --runtime win-x64
 
-    # 3) Build da solução (sem RID)
-    - name: Compilar a solução (Release)
-      run: dotnet build Storia.sln \
-            --configuration Release \
-            --no-restore
+      # 6) Build da solução (Release, sem RID)
+      - name: Compilar a solução (Release)
+        run: |
+          dotnet build Storia.sln --configuration Release --no-restore
 
-    # 4) Publish do projeto MAUI com RID
-    - name: Publicar o aplicativo MAUI para Windows
-      run: dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj \
+      # 7) Publish do projeto MAUI com RID
+      - name: Publicar o aplicativo MAUI para Windows
+        run: |
+          dotnet publish src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj \
             -f net8.0-windows10.0.19041.0 \
             -c Release \
             -r win-x64 \
@@ -46,14 +49,16 @@ jobs:
             --no-build \
             -o ./publish
 
-    - name: Criar arquivo ZIP
-      run: Compress-Archive -Path ./publish/* -DestinationPath storia-erp-windows.zip
+      # 8) Empacotar resultado
+      - name: Criar arquivo ZIP
+        run: Compress-Archive -Path ./publish/* -DestinationPath storia-erp-windows.zip
 
-    - name: Criar Release no GitHub
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: "release-${{ github.run_number }}"
-        name: "Storia ERP Release ${{ github.run_number }}"
-        body: "Release automática gerada pelo GitHub Actions."
-        files: storia-erp-windows.zip
+      # 9) Criar Release no GitHub
+      - name: Criar Release no GitHub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "release-${{ github.run_number }}"
+          name: "Storia ERP Release ${{ github.run_number }}"
+          body: "Release automática gerada pelo GitHub Actions."
+          files: storia-erp-windows.zip
