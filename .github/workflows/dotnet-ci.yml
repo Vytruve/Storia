@@ -1,0 +1,84 @@
+# Nome do Workflow - Aparecerá na aba "Actions" do GitHub
+name: Build e Release do Storia ERP
+
+# Gatilhos: Quando este workflow deve ser executado
+on:
+  push:
+    branches: [ main ] # Executa em pushes para a branch principal
+  pull_request:
+    branches: [ main ] # Executa em pull requests para a branch principal
+
+jobs:
+  # --------------------------------------------------
+  # JOB 1: Construir a aplicação
+  # --------------------------------------------------
+  build:
+    # O ambiente de execução. Essencial ser Windows para compilar um app MAUI para Windows.
+    runs-on: windows-latest
+
+    steps:
+    # Passo 1: Obter o código do repositório
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    # Passo 2: Configurar o ambiente .NET
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        # Lê a versão do SDK do arquivo global.json para garantir consistência
+        global-json-file: global.json
+
+    # Passo 3: Instalar a carga de trabalho do .NET MAUI (passo crucial!)
+    - name: Instalar carga de trabalho MAUI para Windows
+      run: dotnet workload install maui-windows
+
+    # Passo 4: Restaurar as dependências NuGet
+    - name: Restaurar pacotes NuGet
+      run: dotnet restore Storia.sln
+
+    # Passo 5: Compilar a solução inteira em modo Release
+    - name: Compilar a solução
+      run: dotnet build Storia.sln --configuration Release --no-restore
+
+    # Passo 6: Empacotar os artefatos da build para a Release
+    - name: Empacotar artefatos
+      uses: actions/upload-artifact@v4
+      with:
+        name: storia-erp-windows
+        # Caminho para os arquivos compilados do projeto de UI
+        path: src/UI/Storia.UI.Maui/bin/Release/net8.0-windows10.0.19041.0/win10-x64/
+
+  # --------------------------------------------------
+  # JOB 2: Criar a Release no GitHub
+  # --------------------------------------------------
+  release:
+    # Condição: Só executa este job se o gatilho foi um 'push' para a branch 'main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    # Dependência: Só começa se o job 'build' for bem-sucedido
+    needs: build
+    
+    # O ambiente para criar a release pode ser Ubuntu, é mais rápido e barato
+    runs-on: ubuntu-latest
+
+    steps:
+    # Passo 1: Baixar os artefatos compilados no job anterior
+    - name: Baixar artefatos da build
+      uses: actions/download-artifact@v4
+      with:
+        name: storia-erp-windows
+
+    # Passo 2: Criar um arquivo ZIP para facilitar o download do usuário
+    - name: Criar arquivo ZIP
+      run: zip -r storia-erp-windows.zip .
+
+    # Passo 3: Criar a Release no GitHub e anexar o ZIP
+    - name: Criar Release no GitHub
+      uses: softprops/action-gh-release@v2
+      with:
+        # O nome da tag da release será baseado na data e hora
+        tag_name: "release-${{ github.run_number }}"
+        name: "Storia ERP Release ${{ github.run_number }}"
+        body: "Release automática gerada pelo GitHub Actions."
+        # Anexa o arquivo ZIP que acabamos de criar
+        files: storia-erp-windows.zip
