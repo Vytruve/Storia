@@ -8,7 +8,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          # Android: roda no Ubuntu
+          - os: ubuntu-latest
+            tf: net8.0-android
+          # Windows: roda no Windows
+          - os: windows-latest
+            tf: net8.0-windows10.0.19041.0
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: 🧾 Checkout do repositório
@@ -19,30 +29,32 @@ jobs:
         with:
           dotnet-version: 8.0.100
 
-      - name: 📦 Restaurar workloads (MAUI, etc)
+      - name: 📦 Restaurar workloads MAUI
         run: dotnet workload restore
 
       - name: 🧩 Restaurar pacotes NuGet
         run: dotnet restore
 
-      - name: 🏗️ Build do projeto MAUI
+      - name: 🏗️ Build para ${{ matrix.tf }}
         run: |
           dotnet build src/UI/Storia.UI.Maui/Storia.UI.Maui.csproj \
             --configuration Release \
             --no-restore \
+            --framework ${{ matrix.tf }} \
             -p:EnableWindowsTargeting=true
 
       - name: 🧪 Rodar testes (se existirem)
+        if: matrix.os == 'windows-latest'
         run: |
           if ls tests/**/*.csproj 1> /dev/null 2>&1; then
-            dotnet test --no-build --configuration Release
+            dotnet test --no-build --configuration Release --framework ${{ matrix.tf }}
           else
-            echo "🔍 Nenhum projeto de teste encontrado, pulando testes..."
+            echo "🔍 Sem testes, pulando..."
           fi
 
-      - name: 📁 Upload de artefatos (build result)
-        if: success()
+      - name: 📁 Upload de artefatos (${{ matrix.tf }})
         uses: actions/upload-artifact@v4
+        if: success()
         with:
-          name: build-artifacts
-          path: src/UI/Storia.UI.Maui/bin/Release
+          name: build-${{ matrix.tf }}
+          path: src/UI/Storia.UI.Maui/bin/Release/${{ matrix.tf }}
